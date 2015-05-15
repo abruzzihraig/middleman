@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/abruzzihraig/middleman#readme",
   "dependencies": {
-    "koa": "^0.20.0"
+    "koa": "^0.20.0",
+    "koa-static": "^1.4.9"
   }
 }
