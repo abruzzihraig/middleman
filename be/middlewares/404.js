@@ -1,3 +1,7 @@
+var path = require('path');
+var page_404 = path.join(__dirname, '../../fe/dist/404.html');
+var send = require('koa-send');
+
 module.exports = function() {
     'use strict'
     return function* page_not_found(next) {
@@ -5,11 +9,11 @@ module.exports = function() {
 
         if(this.status != 404) return;
         this.status = 404;
+        console.log(page_404)
 
         switch(this.accepts('html', 'json')) {
             case 'html':
-                this.type = 'html';
-                this.body = '<p>Page not found</p>';
+                yield send(this, page_404);
                 break;
             case 'json':
                 this.body = {
