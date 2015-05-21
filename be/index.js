@@ -2,7 +2,7 @@ var koa = require('koa');
 var serve = require('koa-static');
 var path = require('path');
 var err_pages = require('./middlewares/404');
-var app_path = path.join(__dirname, '../../fe/dist');
+var app_path = path.join(__dirname, '../fe/dist');
 var app = koa();
 
 app.use(err_pages());

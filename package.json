@@ -2,10 +2,10 @@
   "name": "middleman",
   "version": "1.0.0",
   "description": "This project aims at building a mock server to separate front-end and back-end with consistent API.",
-  "main": "be/es5/index.js",
+  "main": "be/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "iojs be/es5/index.js"
+    "start": "iojs be/index.js"
   },
   "repository": {
     "type": "git",
@@ -27,8 +27,5 @@
     "koa": "^0.20.0",
     "koa-static": "^1.4.9"
   },
-  "devDependencies": {
-    "gulp-babel": "^5.1.0",
-    "gulp-watch": "^4.2.4"
-  }
+  "devDependencies": {}
 }
