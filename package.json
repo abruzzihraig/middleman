@@ -4,7 +4,8 @@
   "description": "This project aims at building a mock server to separate front-end and back-end with consistent API.",
   "main": "be/es5/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "iojs be/es5/index.js"
   },
   "repository": {
     "type": "git",

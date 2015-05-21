@@ -3,6 +3,7 @@ var watch = require('gulp-watch');
 var babel = require('gulp-babel');
 var path = require('path');
 var paths = {
+    index: 'index.js',
     es6: 'be/es6',
     es5: 'be/es5'
 }
