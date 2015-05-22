@@ -9,7 +9,6 @@ module.exports = function() {
 
         if(this.status != 404) return;
         this.status = 404;
-        console.log(page_404)
 
         switch(this.accepts('html', 'json')) {
             case 'html':
