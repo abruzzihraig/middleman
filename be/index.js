@@ -1,13 +1,20 @@
+var path = require('path');
 var app = require('koa')();
 var router = require('koa-router')();
 var serve = require('koa-static');
-var path = require('path');
+var jwt = require('koa-jwt');
+var logger = require('koa-logger')();
 var parser = require('koa-bodyparser')();
-var err_pages = require('./middlewares/404');
+var err_pages = require('./middlewares/err_pages');
+var intercepter = require('./middlewares/intercepter')();
 var app_path = path.join(__dirname, '../fe/dist');
 var r = require('rethinkdbdash')();
 
+app.use(logger);
 app.use(parser);
+app.use(intercepter);
+
+
 
 router.get('/test', function*(next) {
     this.body = 'test API';
