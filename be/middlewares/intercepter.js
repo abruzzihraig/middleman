@@ -6,7 +6,8 @@ module.exports = function() {
     return function* jwt_intercepter(next) {
         if (this.url.match(/^\/api/)) {
             try {
-                yield* jwt.call(this);
+                // hack koa-jwt here to make it work from inner of intercepter
+                yield* jwt.call(this, Promise.resolve());
             } catch (err) {
                 // 401 unauthorized
                 this.status = err.status;

@@ -63,7 +63,6 @@ router.post('/signup',
     }
 );
 
-router.post('/logout', function*(next) {
-})
+router.post('/logout', function*(next) {})
 
 module.exports = router.routes();
