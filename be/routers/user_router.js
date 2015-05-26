@@ -1,6 +1,6 @@
 var r = require('rethinkdbdash')();
 var router = new require('koa-router')({
-    prefix: '/public/v1/user'
+    prefix: '/api/v1/user'
 });
 
 router.get('/test', function*(next) {

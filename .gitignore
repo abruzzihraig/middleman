@@ -2,3 +2,4 @@ node_modules
 *.swp
 *.swo
 rethinkdb_data
+be/config.js
