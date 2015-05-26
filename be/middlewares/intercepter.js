@@ -9,6 +9,7 @@ module.exports = function(app) {
             } catch (err) {
                 // 401 unauthorized
                 this.status = err.status;
+                this.body = err.message;
             }
         }
         yield next;

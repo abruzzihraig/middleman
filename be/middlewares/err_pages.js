@@ -1,7 +1,7 @@
-var path = require('path');
-var page_404 = path.join(__dirname, '../../fe/dist/404.html');
-var send = require('koa-send');
-var compose = require('koa-compose');
+var path = require('path'),
+    page_404 = path.join(__dirname, '../../fe/dist/404.html'),
+    send = require('koa-send'),
+    compose = require('koa-compose');
 
 module.exports = function() {
     'use strict'
@@ -34,16 +34,16 @@ module.exports = function() {
 
             switch(this.accepts('html', 'json')) {
                 case 'html':
-                    this.body = '<p>User with unauthorized token\n</p>'
+                    this.body = `<p>${this.body}</p>`
                     break;
                 case 'json':
                     this.body = {
-                        message: 'User with unauthorized token'
+                        message: this.body || 'User with unauthorized token'
                     };
                     break;
                 default:
                     this.type = 'text';
-                    this.body = 'User with unauthorized token';
+                    this.body = this.body || 'User with unauthorized token';
             }
         }
     ]);
