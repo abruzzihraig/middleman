@@ -1,6 +1,8 @@
 var config = require('./config'),
     path = require('path'),
     app = require('koa')(),
+    rules = require('./routers/rules'),
+    scheme = require('koa-scheme')(rules, {debug: true}),
     serve = require('koa-static')(config.APP_PATH),
     logger = require('koa-logger')(),
     parser = require('koa-bodyparser')(),
@@ -12,6 +14,7 @@ app.use(logger)
     .use(parser)
     .use(err_pages)
     .use(intercepter)
+    .use(scheme)
     .use(router)
     .use(serve)
     .listen(3000);

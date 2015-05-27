@@ -8,7 +8,7 @@ var router = new require('koa-router')({
 
 router.post('/login',
     function* validate_user(next) {
-        var result = yield r.db('man').table('users').filter({username: this.request.body.username, password: this.request.body.password}).run();
+        var result = yield r.db('man').table('users').filter({username: this.request.body.username, password: this.request.body.psw}).run();
 
         if(result.length < 1) {
             this.status = 401;
