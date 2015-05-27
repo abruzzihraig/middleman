@@ -1,18 +1,14 @@
 var r = require('rethinkdbdash')();
 var config = require('../config');
 var jwt = require('koa-jwt');
+var update_token = require('../middlewares/token').update_token;
 var router = new require('koa-router')({
     prefix: '/public/v1/user'
 });
 
 router.post('/login',
     function* validate_user(next) {
-        try {
-            var result = yield r.db('man').table('users').filter({name: this.request.body.name, psw: this.request.body.psw}).run();
-        } catch (err) {
-            this.status = 500;
-            this.body = {err: err};
-        }
+        var result = yield r.db('man').table('users').filter({username: this.request.body.username, password: this.request.body.password}).run();
 
         if(result.length < 1) {
             this.status = 401;
@@ -22,14 +18,8 @@ router.post('/login',
         this.request.body.userid = result[0].id;
         yield next;
     },
-    function* update_token(next) {
-        try {
-            this.request.body.token = jwt.sign(this.request.body, config.JWT_SECRET, {expiresInSeconds: config.JWT_EXPIRES});
-            yield r.db('man').table('users').get(this.request.body.userid).update(this.request.body);
-        } catch (err) {
-            this.status = 500;
-            this.body = {err: err};
-        }
+    function* reset_token() {
+        this.request.body.token = yield* update_token(this.request.body, this.request.body.userid);
 
         this.status = 202;
         this.body = {token: this.request.body.token};
@@ -38,12 +28,7 @@ router.post('/login',
 
 router.post('/signup',
     function* check_duplidate_user(next) {
-        try {
-            var is_duplicate = yield r.db('man').table('users').filter({name: this.request.body.name}).count().run();
-        } catch (err) {
-            this.status = 500;
-            this.body = {err: err};
-        }
+        var is_duplicate = yield r.db('man').table('users').filter({username: this.request.body.username}).count().run();
 
         if (is_duplicate) {
             this.status = 409 // resource conflict
@@ -51,18 +36,11 @@ router.post('/signup',
         }
         yield next;
     },
-    function* signup(next) {
-        try {
-            this.request.body.token = jwt.sign(this.request.body, config.JWT_SECRET,
-                {expiresInSeconds: config.JWT_EXPIRES});
-            this.body = yield r.db('man').table('users').insert(this.request.body);
-        } catch (err) {
-            this.status = 500;
-            this.body = {err: err};
-        }
+    function* signup() {
+        this.request.body.token = jwt.sign(this.request.body, config.JWT_SECRET, {expiresInSeconds: config.JWT_EXPIRES});
+        yield r.db('man').table('users').insert(this.request.body);
+        this.body = {message: 'signup successfully'};
     }
 );
-
-router.post('/logout', function*(next) {})
 
 module.exports = router.routes();

@@ -10,8 +10,8 @@ var config = require('./config'),
 
 app.use(logger)
     .use(parser)
-    .use(intercepter)
     .use(err_pages)
+    .use(intercepter)
     .use(router)
     .use(serve)
     .listen(3000);
