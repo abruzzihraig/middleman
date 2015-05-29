@@ -1,4 +1,5 @@
-var validator =  require('validator');
+import validator from 'validator';
+
 module.exports = {
     '/public/v1/user/login': {
         request: {

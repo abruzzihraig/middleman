@@ -1,10 +1,9 @@
-var r = require('rethinkdbdash')();
-var router = new require('koa-router')({
-    prefix: '/api/v1/channel'
-});
+import Router from 'koa-router';
 
-router.get('/test', function*(next) {
+var router = new Router({prefix: '/public/v1/channel'});
+
+export default router
+.get('/test', function*(next) {
     this.body = 'channel API';
 })
-
-module.exports = router.routes();
+.routes();

@@ -1,22 +1,23 @@
-var config = require('./config'),
-    path = require('path'),
-    app = require('koa')(),
-    rules = require('./routers/rules'),
-    scheme = require('koa-scheme')(rules, {debug: true}),
-    serve = require('koa-static')(config.APP_PATH),
-    logger = require('koa-logger')(),
-    parser = require('koa-bodyparser')(),
-    err_pages = require('./middlewares/err_pages')(),
-    intercepter = require('./middlewares/intercepter')(),
-    router = require('./routers')();
+import path from 'path';
+import koa from 'koa';
+import scheme from 'koa-scheme';
+import serve from 'koa-static';
+import logger from 'koa-logger';
+import parser from 'koa-bodyparser';
+import router from './routers';
+import {err_pages} from './middlewares/err_pages';
+import {jwt_intercepter} from './middlewares/intercepter';
+import rules from './routers/rules';
+import {SERVER_PORT as port, APP_PATH as fe_root} from './config';
 
-app.use(logger)
-    .use(parser)
-    .use(err_pages)
-    .use(intercepter)
-    .use(scheme)
-    .use(router)
-    .use(serve)
-    .listen(3000);
+koa()
+.use(logger())
+.use(parser())
+.use(err_pages())
+.use(jwt_intercepter)
+.use(scheme(rules, {debug: true}))
+.use(router)
+.use(serve(fe_root))
+.listen(port);
 
-console.log('koa is listening on 3000 port');
+console.info(`koa is listening on ${port} port`);

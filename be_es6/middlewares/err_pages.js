@@ -1,10 +1,9 @@
-var path = require('path'),
-    page_404 = path.join(__dirname, '../../fe/dist/404.html'),
-    send = require('koa-send'),
-    compose = require('koa-compose');
+import path from 'path';
+import send from 'koa-send';
+import compose from 'koa-compose';
+import {PAGE_404 as page_404} from '../config';
 
-module.exports = function() {
-    'use strict'
+export function err_pages() {
     return compose([
         function* page_not_found(next) {
             yield next;

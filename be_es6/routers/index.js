@@ -1,8 +1,6 @@
-var compose = require('koa-compose');
-var user_router = require('./user_router');
-var channel_router = require('./channel_router');
-var global_router = require('./global_router');
+import compose from 'koa-compose';
+import global_router from './global_router';
+import user_router from './user_router';
+import channel_router from './channel_router';
 
-module.exports = function() {
-    return compose([user_router, channel_router, global_router]);
-}
+export default compose([user_router, channel_router, global_router]);
