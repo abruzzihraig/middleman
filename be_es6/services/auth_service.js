@@ -59,14 +59,14 @@ module.exports = {
     },
 
     clean_token: function* clean_token() {
-        var result = yield* user_dao.update_token(this.state.jwtdata.userid, '');
+        var result = yield* user_dao.update_token(this.state.user.userid, '');
         if (result.replaced) {
             this.body = {message: 'logout successfully'};
         }
     },
 
     validate_origin_psw: function* validate_origin_password(next) {
-        var is_exist = yield* user_dao.is_exist({username: this.state.jwtdata.username, password: this.request.body.oldpsw})
+        var is_exist = yield* user_dao.is_exist({username: this.state.user.username, password: this.request.body.oldpsw})
         if (is_exist) return yield next;
 
         this.status = 401; //TODO
@@ -81,8 +81,7 @@ module.exports = {
     },
 
     change_psw: function* change_password() {
-        console.log(this.state.jwtdata)
-        var result = yield* user_dao.update_user(this.state.jwtdata.userid, {password: this.request.body.newpsw});
+        var result = yield* user_dao.update_user(this.state.user.userid, {password: this.request.body.newpsw});
 
         // TODO encrypt the password
         if (result.replaced) {
