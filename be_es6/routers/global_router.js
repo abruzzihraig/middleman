@@ -6,6 +6,7 @@ var router = new Router({prefix: '/public/v1/user'});
 export default router
 .post(
     '/login',
+    encrypt_psw,
     validate_user,
     sign_user,
     update_token
@@ -13,6 +14,7 @@ export default router
 .post(
     '/signup',
     check_duplicate_user,
+    encrypt_psw,
     signup,
     sign_user,
     update_token

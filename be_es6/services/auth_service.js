@@ -1,8 +1,13 @@
 import jwt from 'koa-jwt';
+import pwd from 'node-pwd';
 import User_repo from '../repositories/user_repo';
 import {JWT_SECRET as secret, JWT_EXPIRES as token_expires} from '../config';
 
 let user_repo = new User_repo();
+
+export function* encrypt_psw(next) {
+    var psw = this.request.body.psw;
+}
 
 export function* validate_user(next) {
     var obj = {

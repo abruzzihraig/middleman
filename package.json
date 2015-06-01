@@ -32,7 +32,9 @@
     "koa-scheme": "^1.4.2",
     "koa-send": "^1.3.1",
     "koa-static": "^1.4.9",
+    "pwd": "0.0.4",
     "rethinkdbdash": "^2.0.10",
+    "shortid": "^2.2.2",
     "validator": "^3.40.0"
   },
   "devDependencies": {
