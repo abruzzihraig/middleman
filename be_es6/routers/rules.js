@@ -6,7 +6,7 @@ module.exports = {
             method: 'POST',
             body: {
                 username: validator.isEmail,
-                psw: /\w{6,10}/
+                pwd: /\w{6,10}/
             }
         }
     }

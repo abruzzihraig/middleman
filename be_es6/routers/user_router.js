@@ -1,4 +1,4 @@
-import {clean_token, validate_origin_psw, check_new_psw, change_psw} from '../services/auth_service';
+import {clean_token, encrypt_pwd, verify_original_pwd, unify_pwd_twice, update_pwd, find_user_data} from '../services/auth_service';
 import Router from 'koa-router';
 
 var router = new Router({prefix: '/api/v1/user'});
@@ -13,8 +13,10 @@ export default router
 )
 .put(
     '/password',
-    validate_origin_psw,
-    check_new_psw,
-    change_psw
+    unify_pwd_twice,
+    find_user_data,
+    verify_original_pwd,
+    encrypt_pwd,
+    update_pwd
 )
 .routes();
