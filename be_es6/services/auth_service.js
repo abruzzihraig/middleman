@@ -1,35 +1,23 @@
 import jwt from 'koa-jwt';
-import pass from 'pwd';
+import {encrypt as pass_encrypt, verify as pass_verify} from '../middlewares/pass';
 import User_repo from '../repositories/user_repo';
-import {JWT_SECRET as secret, JWT_EXPIRES as token_expires, HASH_ITERATION as iterations} from '../config';
+import {JWT_SECRET as secret, JWT_EXPIRES as token_expires} from '../config';
 
 let user_repo = new User_repo();
-// make the hash slower
-pass.iterations(iterations);
 
 export function* encrypt_pwd(next) {
     var pwd = this.request.body.pwd;
-    yield new Promise((resolve, reject) => {
-        pass.hash(pwd, (err, salt, hash) => {
-            if (err) reject(err);
-            this.request.body.pwd = hash;
-            this.request.body.salt = salt;
-            resolve({salt, hash})
-        })
-    })
+    var {salt: this.request.body.pwd, hash: this.request.body.salt} = yield pass_encrypt(pwd);
+
     yield next;
 }
 
 export function* verify_pwd(next) {
-    var pwd = this.request.body.pwd;
+    var rawpwd = this.request.body.pwd;
+    var pwd = this.state.user.pwd;
     var salt = this.state.user.salt;
 
-    var is_valid = yield new Promise((resolve, reject) => {
-        pass.hash(pwd, salt, (err, hash) => {
-            if (err) reject(err);
-            resolve(this.state.user.pwd === hash);
-        })
-    })
+    var is_valid = yield pass_verify(salt, rawpwd, pwd)
 
     if(is_valid) return yield next;
 
@@ -39,14 +27,10 @@ export function* verify_pwd(next) {
 
 export function* verify_original_pwd(next) {
     var oldpwd = this.request.body.oldpwd;
+    var pwd = this.state.user.pwd;
     var salt = this.state.user.salt;
 
-    var is_valid = yield new Promise((resolve, reject) => {
-        pass.hash(oldpwd, salt, (err, hash) => {
-            if (err) reject(err);
-            resolve(this.state.user.pwd === hash);
-        })
-    })
+    var is_valid = yield pass_verify(salt, oldpwd, pwd)
 
     if(is_valid) return yield next;
 
@@ -151,7 +135,11 @@ export function* unify_pwd_twice(next) {
 }
 
 export function* update_pwd() {
-    var result = yield* user_repo.update_entity(this.state.user.userid, {pwd: this.request.body.pwd, salt: this.request.body.salt});
+    var userid = this.state.user.userid;
+    var pwd = this.request.body.pwd;
+    var salt = this.request.body.salt;
+
+    var result = yield* user_repo.update_entity(userid, {pwd, salt});
 
     if (result.replaced) {
         this.body = {message: 'password was changed successfully'};
