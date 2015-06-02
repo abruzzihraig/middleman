@@ -14,4 +14,6 @@ export const PAGE_404 = path.join(__dirname, '../fe/dist/404.html');
 
 export const DATABASE = 'xxx';
 
-export const r = rethinkdbdash().db('xxx');
+export const R = rethinkdbdash().db('xxx');
+
+export const HASH_ITERATION = 20000;

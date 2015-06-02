@@ -1,8 +1,8 @@
-import {r} from '../config';
+import {R} from '../config';
 
 export default class {
     constructor(table) {
-        this.entity = r.table(table);
+        this.entity = R.table(table);
     }
 
     *find_by_id(id) {
