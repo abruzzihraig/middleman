@@ -7,8 +7,9 @@ let user_repo = new User_repo();
 
 export function* encrypt_pwd(next) {
     var pwd = this.request.body.pwd;
-    var {salt: this.request.body.pwd, hash: this.request.body.salt} = yield pass_encrypt(pwd);
-
+    var {salt, hash} = yield pass_encrypt(pwd);
+    this.request.body.pwd = hash
+    this.request.body.salt = salt;
     yield next;
 }
 
@@ -21,8 +22,7 @@ export function* verify_pwd(next) {
 
     if(is_valid) return yield next;
 
-    this.status = 401; // TODO
-    return this.body = 'Login faild, either username or password was wrong';
+    this.throw(401, 'Login faild, either username or password was wrong');
 }
 
 export function* verify_original_pwd(next) {
@@ -34,18 +34,14 @@ export function* verify_original_pwd(next) {
 
     if(is_valid) return yield next;
 
-    this.status = 401; // TODO
-    return this.body = 'original password was wrong';
+    this.throw(401, 'original password was wrong');
 }
 
 export function* verify_username(next) {
     var username = this.request.body.username;
     var result = yield* user_repo.find_by_properties({username});
 
-    if(result.length !== 1) {
-        this.status = 401;
-        return this.body = 'Login faild, either username or password was wrong';
-    }
+    if(result.length !== 1) this.throw(401, 'Login faild, either username or password was wrong');
 
     this.state.user = result[0];
     yield next;
@@ -67,16 +63,13 @@ export function* update_token() {
     yield* user_repo.update_entity(this.state.user.userid, this.state.user);
 
     this.status = 202;
-    this.body = {token: this.state.user.token};
+    return this.body = {token: this.state.user.token};
 }
 
 export function* check_duplicate_user(next) {
     var is_duplicate = yield* user_repo.is_exist({username: this.request.body.username});
-    if (is_duplicate) {
-        this.status = 409 // resource conflict
-        return this.body = {message: 'The username has already existed'};
-    }
 
+    if (is_duplicate) this.throw(409, 'The username has already existed');
     yield next;
 }
 
@@ -110,28 +103,11 @@ export function* find_user_data(next) {
     yield next;
 }
 
-export function* verify_original_pwd(next) {
-    var oldpwd = this.request.body.oldpwd;
-    var salt = this.state.user.salt;
-
-    var is_valid = yield new Promise((resolve, reject) => {
-        pass.hash(oldpwd, salt, (err, hash) => {
-            if (err) reject(err);
-            resolve(this.state.user.pwd === hash);
-        })
-    })
-
-    if(is_valid) return yield next;
-
-    this.status = 401; // TODO
-    return this.body = 'original password was wrong';
-}
 
 export function* unify_pwd_twice(next) {
     if (this.request.body.pwd === this.request.body.confirmpwd) return yield next;
 
-    this.status = 403; //TODO
-    this.body = {message: 'password twice were inconsistency'};
+    this.throw(401, 'password twice were different')
 }
 
 export function* update_pwd() {
