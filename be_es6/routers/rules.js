@@ -1,13 +1,6 @@
 import validator from 'validator';
+import _ from 'underscore';
+import user_rules from './user_rules';
+import global_rules from './global_rules';
 
-module.exports = {
-    '/public/v1/user/login': {
-        request: {
-            method: 'POST',
-            body: {
-                username: validator.isEmail,
-                pwd: /\w{6,10}/
-            }
-        }
-    }
-}
+export var rules = _.extend({}, user_rules, global_rules);

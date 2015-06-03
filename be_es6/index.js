@@ -7,7 +7,7 @@ import parser from 'koa-bodyparser';
 import router from './routers';
 import {err_pages} from './middlewares/err_pages';
 import {jwt_intercepter} from './middlewares/intercepter';
-import rules from './routers/rules';
+import {rules} from './routers/rules';
 import {SERVER_PORT as port, APP_PATH as fe_root} from './config';
 
 koa()
@@ -15,7 +15,7 @@ koa()
 .use(parser())
 .use(err_pages())
 .use(jwt_intercepter)
-.use(scheme(rules, {debug: true}))
+.use(scheme(rules))
 .use(router)
 .use(serve(fe_root))
 .listen(port);
